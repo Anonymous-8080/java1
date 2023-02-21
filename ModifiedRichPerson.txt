@@ -1,0 +1,118 @@
+Program Statement 2 : Modify program 1 such that instead of modeling each car as a String 
+type model it using your own user defined Car type. Define Car as an Interface. And define some 
+concrete Car class; For instance, Mercedes can be defined as a class implementing the Car 
+interface. Every concrete Car class should maintain information about the model and 
+manufacturing year of that car. The constructor of the class should accept these as String 
+parameters. The Car interface specifies a method drive the implementation of which simply 
+prints information about the actual car (its make, model, year etc.) which is being driven.
+Thus, in this program we want constructor injection of a list of Car types into an object of Rich 
+Person type.
+Make this work by doing necessary changes to the code of the concrete Car class as well as the 
+XML wiring information of your previous program: Program1.
+Code :  
+
+
+Person.java
+package nmitd;
+public interface Person {
+public void aboutMyself();
+}
+
+
+Car.java
+package nmitd;
+public interface Car {
+public void drive();
+}
+
+
+Mercedes.java
+package nmitd;
+import java.io.PrintStream;
+public class Mercedes implements Car {
+private PrintStream stream;
+public Mercedes(PrintStream stream) {
+this.stream = stream;
+}
+@Override
+public void drive() {
+stream.println("Mercedes 2008 ");
+}
+}
+
+
+Maruti.java
+package nmitd;
+import java.io.PrintStream;
+public class Maruti implements Car {
+PrintStream stream;
+public Maruti(PrintStream stream) {
+this.stream = stream;
+}
+@Override
+public void drive() {
+stream.println("Maruti Suzuki Wagon R 2005");
+}
+}
+
+
+RichPerson.java
+package nmitd;
+import java.util.List;
+public class RichPerson implements Person {
+//private Cars car;
+private String firstName;
+private String lastName;
+private List<Car> carsOwned;
+public RichPerson(String firstName, String lastName, List<Car> carsOwned) {
+this.firstName = firstName;
+this.lastName = lastName;
+this.carsOwned = carsOwned;
+}
+public void aboutMyself() {
+System.out.println("Myself " + firstName + " " + lastName + " am a Rich Person. 
+I own these cars:");
+for (Car myCar : carsOwned) {
+myCar.drive();
+}
+}
+}
+
+
+RichPersonMain.java
+package nmitd;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+public class RichPersonMain {
+public static void main(String[] args) {
+ClassPathXmlApplicationContext context = new
+ClassPathXmlApplicationContext("myBeans.xml");
+Person p1 = context.getBean("p1", Person.class);
+p1.aboutMyself();
+context.close();
+}
+}
+
+
+myBeans.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans.xsd">
+<bean id="p1" class="nmitd.RichPerson">
+<constructor-arg value="Mukesh" />
+<constructor-arg value="Ambani" />
+<constructor-arg>
+<list>
+<ref bean="car1" />
+<ref bean="car2" />
+</list>
+</constructor-arg>
+</bean>
+<bean id="car1" class="nmitd.Mercedes">
+<constructor-arg value="#{T(System).out}" />
+</bean>
+<bean id="car2" class="nmitd.Maruti">
+<constructor-arg value="#{T(System).out}" />
+</bean>
+</beans>

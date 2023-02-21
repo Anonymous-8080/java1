@@ -1,0 +1,80 @@
+LAB 2 : Constructor Injection using XML
+
+MediaPlayer.java
+package nmitd;
+public interface MediaPlayer {
+// public void embarkOnPlay();
+public void play();
+}
+
+
+CompactDisk.java
+package nmitd;
+public interface CompactDisk {
+public void play();
+}
+
+
+CDPlayer.java
+package nmitd;
+public class CDPlayer implements MediaPlayer {
+private CompactDisk insertedCD;
+public CDPlayer(CompactDisk cd) {
+insertedCD = cd;
+}
+@Override
+public void play() {
+insertedCD.play();
+}
+}
+
+
+BollywoodSongsCD.java
+package nmitd;
+import java.io.PrintStream;
+public class BollywoodSongsCD implements CompactDisk {
+private String title;
+private String artist;
+ private PrintStream printer;
+public BollywoodSongsCD(String title,String artist, PrintStream printer) {
+this.title = title;
+this.artist = artist;
+this.printer = printer;
+}
+@Override
+public void play() {
+printer.println("You are playing hollywood songs from " +title+" by "+artist);
+}
+}
+
+
+MediaPlayerMain.java
+package nmitd;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+public class MediaPlayerMain {
+public static void main(String[] args) throws Exception {
+ClassPathXmlApplicationContext context = 
+new ClassPathXmlApplicationContext(
+"songs.xml");
+MediaPlayer media = context.getBean(MediaPlayer.class);
+media.play();
+context.close();
+}
+}
+
+
+Songs.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans.xsd">
+<bean class="nmitd.CDPlayer">
+ <constructor-arg ref="titanicSongsCD" />
+</bean>
+<bean id="titanicSongsCD" class="nmitd.BollywoodSongsCD">
+ <constructor-arg value="Titanic Songs" />
+ <constructor-arg value="Celine Dion" />
+ <constructor-arg value="#{T(System).out}" /> 
+</bean>
+</beans>

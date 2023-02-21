@@ -1,0 +1,75 @@
+Demonstrating Constructor Injection of a Collection type using XML based Wiring of 
+Spring Application.
+Program Statement 1 : Write a program to demonstrate constructor injection of a list of string 
+literals by modeling the below entities:
+A Rich Person owns a list of cars. Each car is described as a String literal. Assume that every 
+Rich Person has a first name and a last name in addition to a list of owned car’s description. All 
+these three parameters should be accepted as constructor arguments. Use XML based 
+configuration to wire your application. Define Person type as an interface and Rich Person 
+type as a class that implements Person interface. Person interface defines a method named as 
+aboutMyself which when invoked on a concrete Person type should simply print the information 
+about that person which includes the person’s full name and cars owned by that person,
+Code :
+
+Person.java
+package nmitd.spring;
+public interface Person {
+public void mySelf();
+}
+
+
+RichPerson.java
+package nmitd.spring;
+import java.util.List;
+public class RichPerson implements Person {
+private String firstName;
+private String lastName;
+private List<String>carsOwned;
+public RichPerson(String firstName, String lastName, List<String>carsOwned) {
+this.firstName = firstName;
+this.lastName = lastName;
+this.carsOwned = carsOwned;
+}
+public void mySelf() {
+System.out.println("Myself "+firstName+" "+lastName+" am a rich person 
+because I own all these cars:");
+for(String myCar : carsOwned) {
+System.out.println("-Car:" +myCar);
+}
+}
+}
+
+
+RichPersonMain.java
+package nmitd.spring;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+public class RichPersonMain {
+public static void main(String[] args) throws Exception{
+ClassPathXmlApplicationContext context = new 
+ClassPathXmlApplicationContext(
+"nmitd/spring/beans.xml");
+Person person = context.getBean(Person.class);
+person.mySelf();
+context.close();
+}
+}
+
+
+beans.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans.xsd">
+<bean id="person" class="nmitd.spring.RichPerson">
+<constructor-arg value="Mukesh"/>
+<constructor-arg value="Ambani"/>
+<constructor-arg>
+<list>
+<value>Mercedes E Class</value>
+<value>Maruti Suzuki Dezire</value>
+<value>BMW</value>
+</list>
+</constructor-arg>
+</bean>
+</beans>

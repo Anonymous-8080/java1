@@ -1,0 +1,81 @@
+SPRING AOP
+Code :
+Performance.java
+Code :
+package springaop;
+public interface Performance {
+public void perform();
+}
+MusicalPerformance.java
+Code :
+package springaop;
+public class MusicalPerformance implements Performance {
+@Override
+public void perform() {
+System.out.println("Executing a musical performance");
+}
+}
+Audience.java
+Code :
+package springaop;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+@Aspect
+public class Audience {
+// before advice
+@Before("execution(* springaop.Performance.perform(..))")
+public void takeSeats() {
+System.out.println("Taking seats for the performance........");
+}
+// before advice
+@Before("execution(* springaop.Performance.perform(..))")
+public void silenceMobilePhones() {
+System.out.println("Putting mobile phones on mute........");
+}
+// after successful method completion advice
+@AfterReturning("execution(* springaop.Performance.perform(..))")
+public void applause() {
+System.out.println("Clapp, Clapp....!!");
+}
+// after exception/failure in method invocation
+@AfterThrowing("execution(* springaop.Performance.perform(..))")
+public void demandRefund() {
+System.out.println("Such a BAD Performance.....We demand Refund 
+of our money !!");
+}
+}
+SpringAOPConcertConfig.java
+Code :
+package springaop;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+@Configuration
+@EnableAspectJAutoProxy
+public class SpringAOPConcertConfig {
+@Bean
+public Performance musicPerformance() {
+return new MusicalPerformance();
+}
+@Bean
+public Audience audience() {
+return new Audience();
+}
+}
+SpringAOPConcertMain.java
+Code :
+package springaop;
+import
+org.springframework.context.annotation.AnnotationConfigApplicationContext;
+public class SpringAOPConcertMain {
+public static void main(String[] args) {
+AnnotationConfigApplicationContext appCtx = new
+AnnotationConfigApplicationContext(
+SpringAOPConcertConfig.class);
+Performance p = appCtx.getBean(Performance.class);
+p.perform();
+appCtx.close();
+}
+}

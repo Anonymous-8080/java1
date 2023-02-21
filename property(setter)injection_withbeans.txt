@@ -1,0 +1,80 @@
+Program Statement 2 – Modify program 1 so as to do Setter Injection of a collection of Car 
+types into a bean of type MiddleclassPerson.
+Code:
+
+MiddleclassPerson.java
+package nmitd;
+import static
+org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+import java.util.*;
+public class MiddleclassPerson implements Person {
+private String fname;
+private String lname;
+private Car myFirstCar;
+private List<Car> myOtherCars;
+public MiddleclassPerson(String fname, String lname) {
+this.fname = fname;
+this.lname = lname;
+}
+public void setMyFirstCar(Car aCar) {
+myFirstCar = aCar;
+}
+public void setOtherCars(List<Car> otherCars) {
+myOtherCars = otherCars;
+}
+@Override
+public void aboutMe() {
+System.out.println(
+"Myself " + fname + " " + lname + " am a Middle Class Person. 
+My First Car is : " + myFirstCar);
+if(myOtherCars != null) {
+System.out.println("My other Cars are : ");
+for(Car car : myOtherCars) {
+System.out.println(car);
+}
+}
+}
+}
+
+
+Toyota.java
+package nmitd;
+public class Toyota implements Car {
+private String model = "Innova";
+private String year = "2020";
+@Override
+public void drive() {
+System.out.println("You are driving " + this);
+}
+public String toString() {
+return "Hyndai " + model + " ("+ year + ")";
+}
+}
+
+
+Lab4beans.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans.xsd">
+<bean id="person" class="nmitd.MiddleclassPerson">
+<constructor-arg value="Gaurav" />
+<constructor-arg value="Jadhav" />
+<property name="myFirstCar" ref="car" />
+</bean>
+<bean id="person2" class="nmitd.MiddleclassPerson">
+<constructor-arg value="Tanishq" />
+<constructor-arg value="Jadhav" />
+<property name="myFirstCar" ref="car" />
+<property name="otherCars">
+<list>
+<ref bean="car2" />
+<ref bean="car3" />
+</list>
+</property>
+</bean>
+<bean id="car" class="nmitd.Hyundai" />
+<bean id="car2" class="nmitd.Suzuki" />
+<bean id="car3" class="nmitd.Toyota" />
+</beans>

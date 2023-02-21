@@ -1,0 +1,101 @@
+Java Spring Laboratory 4: 
+Demonstrating Property Injection (or Setter Injection) using XML based Wiring of Spring 
+Application.
+Program Statement 1 – Write a program to demonstrate Setter (Property) Injection assuming 
+Person, Car , MiddleclassPerson abstractions as described below: You have already modelled 
+RichPerson as a type of Person owning his Car at instantiation time. In that program we assumed 
+Person and Car as interfaces and RichPerson as a class implementing Person interface. There you 
+used Constructor Injection to inject an object of a specific Car type into RichPerson object. 
+Modify that project by adding MiddleclassPerson as another class implementing Person 
+interface. We assume a “middleclass” person might or might not own a car. Thus we will model 
+it as an optional dependency, unlike a rich person who was modelled as having “hard” (or 
+instantiation time) dependency on car object. Thus implement the Dependency Injection of 
+specific Car object into an object of MiddleclassPerson using Setter Injection mechanism. Note 
+however, that first name and last name as String types are to be considered as “hard” 
+dependencies for even MiddleclassPerson object. Thus those should be dependency injected 
+through Constructor Injection same as was done for RichPerson.
+Code :
+
+Person.java
+package nmitd;
+public interface Person {
+public void aboutMe();
+}
+
+
+Car.java
+package nmitd;
+public interface Car {
+public void drive();
+}
+
+
+MiddleclassPerson.java
+package nmitd;
+public class MiddleclassPerson implements Person {
+private String fname;
+private String lname;
+private Car myFirstCar;
+public MiddleclassPerson(String fname, String lname) {
+this.fname = fname;
+this.lname = lname;
+}
+public void setMyFirstCar(Car aCar) {
+myFirstCar = aCar;
+}
+@Override
+public void aboutMe() {
+System.out.println(
+"Myself " + fname + " " + lname + " am a Middle Class Person. 
+My First Car is : " + myFirstCar);
+}
+}
+
+
+Hyundai.java
+package nmitd;
+public class Hyundai implements Car {
+private String model = "Santro";
+private String year = "2015";
+@Override
+public void drive() {
+System.out.println("You are driving " + this);
+}
+public String toString() {
+return "Hyndai" + model + " ( " + year + ")";
+}
+}
+
+
+Suzuki.java
+package nmitd;
+public class Suzuki implements Car {
+private String model = "Dezire";
+private String year = "2017";
+@Override
+public void drive() {
+System.out.println("You are driving " + this);
+}
+public String toString() {
+return "Hyndai" + model + " ( " + year + ")";
+}
+}
+
+
+Lab4Main.java
+package nmitd;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+public class Lab4Main {
+public static void main(String[] args) {
+ClassPathXmlApplicationContext appCtx = new
+ClassPathXmlApplicationContext("lab4beans.xml");
+Person p = appCtx.getBean(MiddleclassPerson.class);
+p.aboutMe();
+appCtx.close();
+// MiddleclassPerson mPerson = new MiddleclassPerson("Saurabh", "Hatkar");
+// Car myCar = new Hyundai();
+// mPerson.setMyFirstCar(myCar);
+// mPerson.aboutMe();
+// myCar.drive();
+}
+}

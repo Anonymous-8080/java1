@@ -1,0 +1,46 @@
+Coding programs to demonstrate Spring Auto wiring.
+Car.java
+package spring;
+public interface Car
+{
+public void drive();
+}
+Suzuki.java
+package spring;
+import org.springframework.stereotype.Component;
+@Component
+public class Suzuki implements Car {
+private String model ;
+private String year;
+public Suzuki(){
+model ="WagonR";
+year = "2019";
+}
+@Override
+public void drive() {
+System.out.println("You are driving " + this);
+}
+public String toString() {
+return "Suzuki " + model + " ("+ year + ")";
+}
+}
+CarConfig.java
+package spring;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+@Configuration
+@ComponentScan
+public class CarConfig {
+}
+AutoWiringMain.java
+package spring;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+public class AutoWiringMain {
+public static void main(String[] args) {
+AnnotationConfigApplicationContext appCtx = new 
+AnnotationConfigApplicationContext(CarConfig.class);
+Car c1 = appCtx.getBean(Suzuki.class);
+c1.drive();
+appCtx.close();
+}
+}

@@ -1,0 +1,74 @@
+Code :
+Knight.java
+
+package nmitd.spring;
+public interface Knight {
+public void embarkOnQuest();
+}
+
+
+Quest.java
+package nmitd.spring;
+public interface Quest {
+public void embark();
+}
+
+
+BraveKnight.java
+package nmitd.spring;
+public class BraveKnight implements Knight {
+private Quest quest;
+public BraveKnight(Quest quest) {
+this.quest = quest;
+}
+@Override
+public void embarkOnQuest() {
+quest.embark();
+}
+}
+
+
+SlayDragonQuest.java
+package nmitd.spring;
+import java.io.PrintStream;
+public class SlayDragonQuest implements Quest {
+private PrintStream stream;
+public SlayDragonQuest(PrintStream stream) {
+this.stream = stream;
+}
+@Override
+public void embark() {
+stream.println("Embarking on quest to slay the dragon!");
+}
+}
+
+
+KnightMain.java
+package nmitd.spring;
+import org.springframework.context.support.
+ ClassPathXmlApplicationContext;
+public class KnightMain {
+public static void main(String[] args) throws Exception {
+ClassPathXmlApplicationContext context = new 
+ClassPathXmlApplicationContext(
+"nmitd/spring/mybeans.xml");
+Knight knight = context.getBean(Knight.class);
+knight.embarkOnQuest();
+context.close();
+}
+}
+
+
+mybeans.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans.xsd">
+<bean id="knight" class="nmitd.spring.BraveKnight">
+ <constructor-arg ref="quest" />
+</bean>
+<bean id="quest" class="nmitd.spring.SlayDragonQuest">
+ <constructor-arg value="#{T(System).out}" />
+</bean>
+</beans>
